@@ -14,7 +14,7 @@ import { search } from '../api/endpoints';
 import { COLORS } from '../config/constants';
 import ErrorMessage from '../components/common/ErrorMessage';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,6 +43,7 @@ const HomeScreen = () => {
         is_site: searchSites,
         is_list: searchLists,
         is_user: searchUsers,
+        is_admin: true,
       });
 
       if (response.status === 'success') {
@@ -66,8 +67,15 @@ const HomeScreen = () => {
     setError(null);
   };
 
+  const handleSitePress = (siteId) => {
+    navigation.navigate('SiteDetails', { siteId });
+  };
+
   const renderSite = ({ item }) => (
-    <TouchableOpacity style={styles.resultCard}>
+    <TouchableOpacity 
+      style={styles.resultCard}
+      onPress={() => handleSitePress(item.id)}
+    >
       <Image
         source={{ uri: item.image }}
         style={styles.siteImage}
@@ -114,6 +122,7 @@ const HomeScreen = () => {
           </View>
         )}
       </View>
+      <Ionicons name="chevron-forward" size={20} color="#999" style={styles.chevron} />
     </TouchableOpacity>
   );
 
@@ -128,6 +137,7 @@ const HomeScreen = () => {
           {item.sites_count} restaurants • Created by {item.creator}
         </Text>
       </View>
+      <Ionicons name="chevron-forward" size={20} color="#999" style={styles.chevron} />
     </TouchableOpacity>
   );
 
@@ -140,6 +150,7 @@ const HomeScreen = () => {
         <Text style={styles.userName}>{item.name}</Text>
         <Text style={styles.userUsername}>@{item.username}</Text>
       </View>
+      <Ionicons name="chevron-forward" size={20} color="#999" style={styles.chevron} />
     </TouchableOpacity>
   );
 
@@ -381,6 +392,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    alignItems: 'center',
   },
   siteImage: {
     width: 80,
@@ -436,6 +448,9 @@ const styles = StyleSheet.create({
     color: '#999',
     alignSelf: 'center',
   },
+  chevron: {
+    marginLeft: 8,
+  },
   listIcon: {
     width: 48,
     height: 48,
@@ -447,7 +462,6 @@ const styles = StyleSheet.create({
   },
   listInfo: {
     flex: 1,
-    justifyContent: 'center',
   },
   listName: {
     fontSize: 16,
@@ -470,7 +484,6 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flex: 1,
-    justifyContent: 'center',
   },
   userName: {
     fontSize: 16,

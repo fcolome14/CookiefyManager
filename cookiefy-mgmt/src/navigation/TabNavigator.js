@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../config/constants';
 
-import HomeScreen from '../screens/HomeScreen';
+import HomeStackNavigator from '../navigation/HomeStackNavigator';
 import RestaurantsScreen from '../screens/RestaurantsScreen';
 import UsersScreen from '../screens/UsersScreen';
 import StatsScreen from '../screens/StatsScreen';
@@ -45,14 +45,14 @@ const TabNavigator = () => {
     >
       <Tab.Screen 
         name="Home" 
-        component={HomeScreen}
+        component={HomeStackNavigator}
         options={{
           title: 'Search',
         }}
       />
-      <Tab.Screen name="Restaurants" component={RestaurantsScreen} />
-      <Tab.Screen name="Users" component={UsersScreen} />
-      <Tab.Screen name="Stats" component={StatsScreen} />
+      {/* <Tab.Screen name="Restaurants" component={RestaurantsScreen} /> */}
+      {/* <Tab.Screen name="Users" component={UsersScreen} />
+      <Tab.Screen name="Stats" component={StatsScreen} /> */}
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );

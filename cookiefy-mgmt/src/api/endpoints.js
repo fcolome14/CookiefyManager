@@ -2,6 +2,15 @@ import apiClient from './client';
 import { STORAGE_KEYS } from '../config/constants';
 import { storage } from '../utils/storage';
 
+// Helper function to add token to params
+const addTokenToParams = async (params = {}) => {
+  const token = await storage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+  if (token) {
+    return { ...params, token };
+  }
+  return params;
+};
+
 // Authentication
 export const auth = {
   login: async (username, password) => {
@@ -14,8 +23,8 @@ export const auth = {
     formData.append('client_id', 'string');
     formData.append('client_secret', '********');
 
-    console.log('Login Request to:', apiClient.defaults.baseURL + '/auth/login');
-    console.log('Form Data:', formData.toString());
+    console.log('📤 Login Request to:', apiClient.defaults.baseURL + '/auth/login');
+    console.log('📝 Form Data:', formData.toString());
 
     const response = await apiClient.post('/auth/login', formData.toString(), {
       skipAuth: true,
@@ -29,7 +38,8 @@ export const auth = {
   },
   
   logout: async () => {
-    const response = await apiClient.post('/auth/logout');
+    const params = await addTokenToParams();
+    const response = await apiClient.post('/auth/logout', null, { params });
     return response.data;
   },
 };
@@ -45,9 +55,11 @@ export const search = {
       lat,
       lon,
       city,
+      cuisine,
+      is_admin,
     } = params;
 
-    // Get token from storage (same place as interceptor)
+    // Get token from storage
     const token = await storage.getItem(STORAGE_KEYS.AUTH_TOKEN);
 
     // Base query matching your FastAPI SearchRead model
@@ -56,73 +68,134 @@ export const search = {
       is_site: !!is_site,
       is_list: !!is_list,
       is_user: !!is_user,
+      is_admin: !!is_admin,
     };
 
-    // Optional geo filters
-    if (typeof lat === 'number') {
-      query.lat = lat;
-    }
-    if (typeof lon === 'number') {
-      query.lon = lon;
-    }
+    // Optional filters
+    if (typeof lat === 'number') query.lat = lat;
+    if (typeof lon === 'number') query.lon = lon;
+    if (city && city.trim()) query.city = city.trim();
+    if (cuisine && cuisine.trim()) query.cuisine = cuisine.trim();
+    if (is_admin) query.is_admin = is_admin;
 
-    // Optional city
-    if (city && city.trim()) {
-      query.city = city.trim();
-    }
-
-    if (token) {
-      query.token = token;
-    }
+    // Add token
+    if (token) query.token = token;
 
     console.log('📤 Search Request params:', query);
 
     const response = await apiClient.get('/posts/search', {
       params: query,
-      // Do NOT set skipAuth: we want the interceptor to also send Authorization header
     });
 
     return response.data;
   },
 };
 
-// Restaurants
-export const restaurants = {
-  getAll: async (params = {}) => {
-    const response = await apiClient.get('/restaurants', { params });
+// Images
+export const images = {
+  uploadSiteImage: async (siteId, imageUri) => {
+    const token = await storage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    
+    // Create FormData for multipart upload
+    const formData = new FormData();
+    
+    // Add the image file
+    const filename = imageUri.split('/').pop();
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : 'image/jpeg';
+    
+    formData.append('file', {
+      uri: imageUri,
+      name: filename,
+      type: type,
+    });
+    
+    // Add site_id to form data
+    formData.append('site_id', siteId);
+
+    console.log('📤 Uploading image for site:', siteId);
+
+    const response = await apiClient.post('/images/site/upload-image/', formData, {
+      params: { token },
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return response.data;
   },
+};
+
+// Sites
+export const sites = {
+  // getAll: async (params = {}) => {
+  //   const paramsWithToken = await addTokenToParams(params);
+  //   const response = await apiClient.get('/restaurants', { 
+  //     params: paramsWithToken 
+  //   });
+  //   return response.data;
+  // },
   
   getById: async (id) => {
-    const response = await apiClient.get(`/restaurants/${id}`);
+    const params = await addTokenToParams();
+    const response = await apiClient.get(`/posts/get-site/${id}`, { params });
     return response.data;
   },
   
-  create: async (data) => {
-    const response = await apiClient.post('/restaurants', data);
-    return response.data;
-  },
+  // create: async (data) => {
+  //   const params = await addTokenToParams();
+  //   const response = await apiClient.post('/restaurants', data, { params });
+  //   return response.data;
+  // },
   
   update: async (id, data) => {
-    const response = await apiClient.put(`/restaurants/${id}`, data);
+    const params = await addTokenToParams();
+    const payload = {
+      id,
+      ...data,
+    };
+    const response = await apiClient.put('/posts/update-site', payload, { params });
     return response.data;
   },
   
-  delete: async (id) => {
-    const response = await apiClient.delete(`/restaurants/${id}`);
-    return response.data;
-  },
+  // delete: async (id) => {
+  //   const params = await addTokenToParams();
+  //   const response = await apiClient.delete(`/restaurants/${id}`, { params });
+  //   return response.data;
+  // },
 };
 
 // Users
 export const users = {
   getAll: async (params = {}) => {
-    const response = await apiClient.get('/users', { params });
+    const paramsWithToken = await addTokenToParams(params);
+    const response = await apiClient.get('/users', { 
+      params: paramsWithToken 
+    });
     return response.data;
   },
   
   getById: async (id) => {
-    const response = await apiClient.get(`/users/${id}`);
+    const params = await addTokenToParams();
+    const response = await apiClient.get(`/users/${id}`, { params });
+    return response.data;
+  },
+  
+  create: async (data) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.post('/users', data, { params });
+    return response.data;
+  },
+  
+  update: async (id, data) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.put(`/users/${id}`, data, { params });
+    return response.data;
+  },
+  
+  delete: async (id) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.delete(`/users/${id}`, { params });
     return response.data;
   },
 };
@@ -130,14 +203,68 @@ export const users = {
 // Statistics
 export const stats = {
   getOverview: async () => {
-    const response = await apiClient.get('/stats/overview');
+    const params = await addTokenToParams();
+    const response = await apiClient.get('/stats/overview', { params });
     return response.data;
   },
   
   getRestaurantStats: async (restaurantId) => {
-    const response = await apiClient.get(`/stats/restaurants/${restaurantId}`);
+    const params = await addTokenToParams();
+    const response = await apiClient.get(`/stats/restaurants/${restaurantId}`, { 
+      params 
+    });
     return response.data;
   },
 };
 
-// Add more endpoint groups as needed
+// Lists
+export const lists = {
+  getAll: async (params = {}) => {
+    const paramsWithToken = await addTokenToParams(params);
+    const response = await apiClient.get('/lists', { 
+      params: paramsWithToken 
+    });
+    return response.data;
+  },
+  
+  getById: async (id) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.get(`/lists/${id}`, { params });
+    return response.data;
+  },
+  
+  create: async (data) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.post('/lists', data, { params });
+    return response.data;
+  },
+  
+  update: async (id, data) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.put(`/lists/${id}`, data, { params });
+    return response.data;
+  },
+  
+  delete: async (id) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.delete(`/lists/${id}`, { params });
+    return response.data;
+  },
+};
+
+// Hashtags
+export const hashtags = {
+  getAll: async (params = {}) => {
+    const paramsWithToken = await addTokenToParams(params);
+    const response = await apiClient.get('/hashtags', { 
+      params: paramsWithToken 
+    });
+    return response.data;
+  },
+  
+  getById: async (id) => {
+    const params = await addTokenToParams();
+    const response = await apiClient.get(`/hashtags/${id}`, { params });
+    return response.data;
+  },
+};
