@@ -1,0 +1,2 @@
+# CookiefyManager
+Cookiefy Manager App
