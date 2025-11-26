@@ -386,7 +386,7 @@ const SiteDetailsScreen = ({ route, navigation }) => {
           style={styles.headerImage}
           defaultSource={require('../../assets/icon.png')}
         />
-        {isEditing && (
+        {/* {isEditing && (
           <TouchableOpacity
             style={styles.changeImageButton}
             onPress={handleImagePicker}
@@ -394,7 +394,7 @@ const SiteDetailsScreen = ({ route, navigation }) => {
             <Ionicons name="camera" size={24} color="#FFF" />
             <Text style={styles.changeImageText}>Change Image</Text>
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
 
       {/* Basic Info */}
