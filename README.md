@@ -169,6 +169,80 @@ npx expo start --android
 # Run on web browser
 npx expo start --web
 ```
+## Building the APK
+
+### For Testing (APK Build)
+
+Run the following command to build an APK for testing:
+
+```bash
+npx eas-cli build --platform android --profile preview
+```
+
+**What happens next:**
+1. EAS will ask if you want to generate a new Android keystore (first time only) - select **Yes**
+2. Your code will be uploaded to Expo's build servers
+3. The build process takes approximately 10-20 minutes
+4. You'll receive a download link when complete
+
+### For Production (AAB Build)
+
+For Google Play Store submission, use:
+
+```bash
+npx eas-cli build --platform android --profile production
+```
+
+This creates an `.aab` file instead of an `.apk`.
+
+## Installing the APK on Your Device
+
+### Method 1: Direct Download on Device
+
+1. Open the build URL on your Android device
+2. Download the APK
+3. Enable "Install from Unknown Sources" in your device settings
+4. Install the APK
+
+### Method 2: Transfer from Computer
+
+1. Download the APK from the build URL to your computer
+2. Connect your Android device via USB
+3. Transfer the APK file to your device
+4. Use a file manager to locate and install the APK
+
+## Testing Checklist
+
+After installing, verify the following:
+
+- [ ] App launches without crashing
+- [ ] All screens load correctly
+- [ ] Navigation works as expected
+- [ ] API calls are functioning
+- [ ] Environment variables are loaded properly
+- [ ] All features work as in development
+- [ ] Permissions are requested (if applicable)
+- [ ] App doesn't crash on different Android versions
+
+## Quick Development Testing
+
+For rapid testing during development without building an APK:
+
+### Option 1: Run on Connected Device
+
+```bash
+npx expo run:android
+```
+
+This builds and installs directly on a connected Android device or emulator.
+
+### Option 2: Use Expo Go App
+
+```bash
+npx expo start
+```
+
+Scan the QR code with the Expo Go app on your device.
 
 ## Troubleshooting
 
