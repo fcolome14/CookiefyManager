@@ -9,7 +9,14 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://cookiefy-api-4jfsechv7q-ew.a.run.app",
+        "EXPO_PUBLIC_API_TIMEOUT": "30000"
+      }
     },
     "production": {
       "autoIncrement": true

@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     try {
       
       const response = await auth.login(username, password);
-      
+
       if (response.status === 'success' && response.data?.token) {
         const accessToken = response.data.token;
         const userData = response.data.username || { username };
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
       // Clear state
       setToken(null);
       setUser(null);
-      
+
     } catch (error) {
       console.error('❌ Logout error:', error);
       

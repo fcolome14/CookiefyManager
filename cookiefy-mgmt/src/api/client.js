@@ -1,8 +1,17 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
-import { API_BASE_URL } from '@env';
 import { API_CONFIG, STORAGE_KEYS } from '../config/constants';
 import { storage } from '../utils/storage';
+
+// Get environment variables
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+const API_TIMEOUT = parseInt(process.env.EXPO_PUBLIC_API_TIMEOUT || '30000', 10);
+
+// Debug logging
+console.log('Environment Variables:');
+console.log('  - API_BASE_URL:', API_BASE_URL);
+console.log('  - API_TIMEOUT:', API_TIMEOUT);
+console.log('  - __DEV__:', __DEV__);
 
 // Navigation reference
 let navigationRef = null;
@@ -18,7 +27,7 @@ export const setLogoutCallback = (callback) => {
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
