@@ -23,9 +23,6 @@ export const auth = {
     formData.append('client_id', 'string');
     formData.append('client_secret', '********');
 
-    console.log('📤 Login Request to:', apiClient.defaults.baseURL + '/auth/login');
-    console.log('📝 Form Data:', formData.toString());
-
     const response = await apiClient.post('/auth/login', formData.toString(), {
       skipAuth: true,
       headers: {
@@ -82,8 +79,6 @@ export const search = {
     // Add token
     if (token) query.token = token;
 
-    console.log('📤 Search Request params:', query);
-
     const response = await apiClient.get('/posts/search', {
       params: query,
     });
@@ -113,8 +108,6 @@ export const images = {
     
     // Add site_id to form data
     formData.append('site_id', siteId);
-
-    console.log('📤 Uploading image for site:', siteId);
 
     const response = await apiClient.post('/images/site/upload-image/', formData, {
       params: { token },

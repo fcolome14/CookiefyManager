@@ -29,17 +29,14 @@ const LoginScreen = () => {
     setLoading(true);
 
     try {
-      console.log('🔐 Starting login process...');
       
       // Call login from AuthContext
       const result = await login(username, password);
 
       if (result.success) {
-        console.log('✅ Login successful');
         // AuthContext will update isAuthenticated, which will trigger navigation
         // No need to do anything else here
       } else {
-        console.log('❌ Login failed:', result.error);
         Alert.alert('Login Failed', result.error || 'Invalid credentials');
       }
     } catch (error) {

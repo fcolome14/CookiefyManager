@@ -54,7 +54,6 @@ apiClient.interceptors.response.use(
 
     // Handle 401 Unauthorized
     if (error.response && error.response.status === 401) {
-      console.log('🚨 401 Unauthorized - Auto-logout initiated');
 
       // Prevent infinite loops
       if (originalRequest._retry) {

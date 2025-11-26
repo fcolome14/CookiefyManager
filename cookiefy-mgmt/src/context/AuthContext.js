@@ -39,11 +39,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      console.log('🔐 Attempting login...');
       
       const response = await auth.login(username, password);
-
-      console.log("RESPONSE: ", response.status)
       
       if (response.status === 'success' && response.data?.token) {
         const accessToken = response.data.token;
@@ -57,7 +54,6 @@ export const AuthProvider = ({ children }) => {
         setToken(accessToken);
         setUser(userData);
 
-        console.log('✅ Login successful');
         return { success: true };
       } else {
         console.error('❌ Login failed:', response.message);
@@ -77,13 +73,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      console.log('🚪 Logging out...');
 
       // Try to logout from API (optional - may fail if token expired)
       try {
         await auth.logout();
       } catch (error) {
-        console.log('⚠️ API logout failed (expected if token expired):', error.message);
+
       }
 
       // Clear local storage
@@ -93,8 +88,7 @@ export const AuthProvider = ({ children }) => {
       // Clear state
       setToken(null);
       setUser(null);
-
-      console.log('✅ Logged out successfully');
+      
     } catch (error) {
       console.error('❌ Logout error:', error);
       
@@ -108,7 +102,6 @@ export const AuthProvider = ({ children }) => {
 
   // Auto-logout handler for 401 errors (called from API client)
   const handleAutoLogout = async () => {
-    console.log('🔄 Auto-logout triggered by 401 error');
     
     // Clear local storage
     await storage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
@@ -117,8 +110,6 @@ export const AuthProvider = ({ children }) => {
     // Clear state
     setToken(null);
     setUser(null);
-
-    console.log('✅ Auto-logout completed');
   };
 
   const value = {

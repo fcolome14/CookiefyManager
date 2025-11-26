@@ -15,7 +15,6 @@ const AppContent = () => {
   useEffect(() => {
     if (navigationRef.current) {
       setNavigationRef(navigationRef.current);
-      console.log('📍 Navigation reference set for auto-logout');
     }
   }, []);
 

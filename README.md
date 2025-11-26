@@ -171,6 +171,53 @@ npx expo start --web
 ```
 ## Building the APK
 
+### Step 1: Login to Expo
+
+```bash
+npx eas-cli login
+```
+
+Enter your Expo credentials when prompted.
+
+### Step 2: Initialize EAS Project
+
+If you don't have a valid project ID yet, run:
+
+```bash
+npx eas-cli init
+```
+
+This will:
+- Link or create an EAS project
+- Provide you with a project ID
+
+**Note:** Since we use `app.config.js` (dynamic configuration), you'll need to manually add the project ID to your config file in the `extra.eas.projectId` field.
+
+### Step 3: Configure EAS Build
+
+```bash
+npx eas-cli build:configure
+```
+
+This creates an `eas.json` file. Modify it to include an APK build profile:
+
+```json
+{
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  }
+}
+```
+
 ### For Testing (APK Build)
 
 Run the following command to build an APK for testing:
