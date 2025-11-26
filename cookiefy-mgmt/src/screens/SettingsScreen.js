@@ -53,7 +53,7 @@ const SettingsScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>User Information</Text>
           
-          <View style={styles.item}>
+          {/* <View style={styles.item}>
             <Text style={styles.itemText}>Name</Text>
             <Text style={styles.itemValue}>{user.name}</Text>
           </View>
@@ -66,12 +66,13 @@ const SettingsScreen = () => {
           <View style={styles.item}>
             <Text style={styles.itemText}>Email</Text>
             <Text style={styles.itemValue}>{user.email}</Text>
-          </View>
+          </View> */}
 
           <View style={styles.item}>
             <Text style={styles.itemText}>Role</Text>
             <Text style={styles.itemValue}>
-              {user.is_admin ? 'Administrator' : 'User'}
+              {/* {user.is_admin ? 'Administrator' : 'User'} */}
+              Administrator
             </Text>
           </View>
         </View>
@@ -87,13 +88,13 @@ const SettingsScreen = () => {
       </View>
 
       {/* Data Section */}
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <Text style={styles.sectionTitle}>Data</Text>
         
         <TouchableOpacity style={styles.item} onPress={handleClearCache}>
           <Text style={styles.itemText}>Clear Cache</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {/* About Section */}
       <View style={styles.section}>
@@ -101,7 +102,7 @@ const SettingsScreen = () => {
         
         <View style={styles.item}>
           <Text style={styles.itemText}>Version</Text>
-          <Text style={styles.itemValue}>1.0.0</Text>
+          <Text style={styles.itemValue}>1.0.0.1</Text>
         </View>
 
         <View style={styles.item}>
