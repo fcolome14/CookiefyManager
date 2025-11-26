@@ -11,7 +11,7 @@ export const STORAGE_KEYS = {
 };
 
 export const COLORS = {
-  primary: '#FF6B6B',
+  primary: '#2F6BFF',
   secondary: '#4ECDC4',
   background: '#F7F7F7',
   text: '#333333',
