@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
+import { setNavigationRef } from './src/api/client';
 import TabNavigator from './src/navigation/TabNavigator';
 import LoginScreen from './src/screens/LoginScreen';
 import { COLORS } from './src/config/constants';
 
 const AppContent = () => {
-  const { isAuthenticated, loading, login } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const navigationRef = useRef(null);
+
+  // Set navigation reference for API client (for auto-logout on 401)
+  useEffect(() => {
+    if (navigationRef.current) {
+      setNavigationRef(navigationRef.current);
+      console.log('📍 Navigation reference set for auto-logout');
+    }
+  }, []);
 
   // Show loading screen while checking authentication
   if (loading) {
@@ -19,11 +29,11 @@ const AppContent = () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       {isAuthenticated ? (
         <TabNavigator />
       ) : (
-        <LoginScreen onLoginSuccess={login} />
+        <LoginScreen />
       )}
     </NavigationContainer>
   );
