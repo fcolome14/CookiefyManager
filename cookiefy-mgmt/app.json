@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.fcolome.cookiefymgmt"
+      "package": "com.fcolome.cookiefy_mgmt"
     },
     "web": {
       "favicon": "./assets/favicon.png"
